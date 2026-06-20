@@ -26,22 +26,14 @@ The server runs at `http://localhost:8080` by default.
 
 ## Launcher
 
-Double-click `mokuyomi.py` (or `start.bat` on Windows) to start the server and open your browser automatically.
+Double-click **`mokuyomi.py`** (or **`start.bat`** on Windows) to start the server and open your browser automatically. Close the window to stop.
 
-### Auto-start on boot
+## Auto-start on boot (optional)
 
-```
-python3 install.py          # one-time setup
-```
+Double-click **`install.bat`** (Windows) or **`install.sh`** (Linux) to make Mokuyomi launch automatically when you log in. A terminal window will walk you through it.
 
-This creates an autostart entry so Mokuyomi launches when you log in.
-
-#### How it works
-
-| Platform | Mechanism |
-|---|---|
-| **Linux** | `~/.config/autostart/mokuyomi.desktop` — starts a terminal running `mokuyomi.py` |
-| **Windows** | `Startup/Mokuyomi.vbs` — launches `mokuyomi.py` in the background |
+- **Windows**: `Mokuyomi.vbs` is placed in the Startup folder — launches silently in the background.
+- **Linux**: `~/.config/autostart/mokuyomi.desktop` is created — opens a terminal with Mokuyomi on login.
 
 ## Structure
 
