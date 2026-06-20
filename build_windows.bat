@@ -54,7 +54,7 @@ echo.
 echo [..] Building Mokuyomi.exe with PyInstaller...
 echo.
 
-pyinstaller --onefile --console --name Mokuyomi --add-data "index.html;." --add-data "style.css;." --add-data "app.js;." --distpath dist_pyinstaller --workpath build_pyinstaller --specpath . mokuyomi.py
+pyinstaller --onefile --console --name Mokuyomi --add-data "index.html;." --add-data "style.css;." --add-data "app.js;." --add-data "icon.svg;." --distpath dist_pyinstaller --workpath build_pyinstaller --specpath . mokuyomi.py
 
 if %errorlevel% neq 0 (
     echo [FAIL] PyInstaller build failed.

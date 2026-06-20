@@ -40,6 +40,7 @@ cp "$SCRIPT_DIR/app.js"        "$PAYLOAD/files/"
 cp "$SCRIPT_DIR/.gitignore"    "$PAYLOAD/files/"
 cp "$SCRIPT_DIR/install.py"    "$PAYLOAD/files/"
 cp "$SCRIPT_DIR/LICENSE.txt"   "$PAYLOAD/files/"
+cp "$SCRIPT_DIR/icon.svg"      "$PAYLOAD/files/"
 
 # Create setup script
 cat > "$PAYLOAD/setup.sh" << 'SETUPEOF'
