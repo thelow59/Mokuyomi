@@ -22,6 +22,8 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_DIRECTORY
 Page custom AutostartPage AutostartPageLeave
 !insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_RUN "$INSTDIR\Mokuyomi.exe"
+!define MUI_FINISHPAGE_RUN_TEXT "Launch Mokuyomi now"
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_CONFIRM
@@ -58,6 +60,17 @@ Section "MainSection" SEC01
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Mokuyomi.lnk" "$INSTDIR\Mokuyomi.exe"
   CreateShortCut "$DESKTOP\Mokuyomi.lnk" "$INSTDIR\Mokuyomi.exe"
 
+  ; Create manga directory
+  CreateDirectory "$INSTDIR\manga"
+  FileOpen $0 "$INSTDIR\manga\readme.txt" w
+  FileWrite $0 "Drop your manga folders here.$\r$\n"
+  FileWrite $0 "Each series should have its .mokuro file and an image folder.$\r$\n"
+  FileWrite $0 "See: https://github.com/thelow59/Mokuyomi"
+  FileClose $0
+
+  ; Create data directory in APPDATA for frozen EXE
+  CreateDirectory "$APPDATA\Mokuyomi"
+
   ; Autostart via HKCU Run
   ${If} $AUTOSTART_CHECKBOX = 1
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Mokuyomi" '"$INSTDIR\Mokuyomi.exe"'
@@ -78,6 +91,7 @@ Section Uninstall
   ; Remove files
   Delete "$INSTDIR\Mokuyomi.exe"
   Delete "$INSTDIR\uninst.exe"
+  RMDir /r "$INSTDIR\manga"
   RMDir "$INSTDIR"
 
   ; Remove shortcuts

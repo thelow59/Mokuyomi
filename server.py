@@ -8,7 +8,10 @@ import sys
 
 if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS
-    DATA_DIR = os.path.dirname(sys.executable)
+    if sys.platform == "win32":
+        DATA_DIR = os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")), "Mokuyomi")
+    else:
+        DATA_DIR = os.path.join(os.path.expanduser("~"), ".local", "share", "Mokuyomi")
 else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_DIR = BASE_DIR
@@ -192,9 +195,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 def run():
+    manga_path = os.path.join(DATA_DIR, MANGA_DIR)
+    os.makedirs(manga_path, exist_ok=True)
+
     server = http.server.ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"Mokuro Reader running on http://{HOST}:{PORT}")
-    print(f"Place mokuro-processed manga in ./{MANGA_DIR}/")
+    print(f"Manga directory: {manga_path}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

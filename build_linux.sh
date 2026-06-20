@@ -59,6 +59,14 @@ mkdir -p "$INSTALL_DIR"
 cp -r "$SCRIPT_DIR/files/"* "$INSTALL_DIR/"
 chmod +x "$INSTALL_DIR/mokuyomi.py"
 
+# Create manga directory
+mkdir -p "$INSTALL_DIR/manga"
+cat > "$INSTALL_DIR/manga/readme.txt" << 'MANGAREOF'
+Drop your manga folders here.
+Each series should have its .mokuro file and an image folder.
+See: https://github.com/thelow59/Mokuyomi
+MANGAREOF
+
 echo "[OK] Files installed."
 
 # Create desktop entry
