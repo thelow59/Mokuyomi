@@ -11,7 +11,7 @@ import server
 
 
 def main():
-    port = int(os.environ.get("PORT", 8081))
+    port = int(os.environ.get("PORT", 8090))
     host = os.environ.get("HOST", "0.0.0.0")
 
     server.HOST = host

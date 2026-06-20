@@ -35,7 +35,7 @@ Download the latest installer from the [Releases](https://github.com/thelow59/Mo
 
 Both installers can optionally enable **autostart on boot** during installation.
 
-The server runs at `http://localhost:8081` by default. Close the window to stop.
+The server runs at `http://localhost:8090` by default. Close the window to stop.
 
 ## Launcher (source only)
 
@@ -63,7 +63,7 @@ Each series directory contains one `.mokuro` file per volume at the series root,
 
 | Env var | Default | Description |
 |---|---|---|
-| `PORT` | `8081` | Server port |
+| `PORT` | `8090` | Server port |
 | `HOST` | `0.0.0.0` | Bind address |
 
 ## Routes
