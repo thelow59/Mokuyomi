@@ -16,7 +16,7 @@ else:
 MANGA_DIR = "manga"
 IMMERSION_PATH = os.path.join(DATA_DIR, "immersion.json")
 PROGRESS_PATH = os.path.join(DATA_DIR, "progress.json")
-PORT = int(os.environ.get("PORT", 8080))
+PORT = int(os.environ.get("PORT", 8081))
 HOST = os.environ.get("HOST", "0.0.0.0")
 
 
