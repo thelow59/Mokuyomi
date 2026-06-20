@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mokuyomi — Manga reader with Yomitan</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0d1117; color: #e6edf3;
+    line-height: 1.6;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.25rem; }
+  .subtitle { color: #8b949e; font-size: 1.1rem; margin-bottom: 2rem; }
+  .badge {
+    display: inline-block; background: #1f2937; color: #e6edf3;
+    padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.8rem;
+    margin-right: 0.3rem; margin-bottom: 0.3rem;
+  }
+  .downloads {
+    display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;
+  }
+  .download-card {
+    display: flex; align-items: center; gap: 1rem;
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 1.25rem; text-decoration: none; color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .download-card:hover { border-color: #58a6ff; background: #1c2128; }
+  .download-card .icon { font-size: 2rem; flex-shrink: 0; }
+  .download-card .info { flex: 1; }
+  .download-card .name { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.15rem; }
+  .download-card .desc { color: #8b949e; font-size: 0.9rem; }
+  .download-card .arrow { font-size: 1.2rem; color: #58a6ff; flex-shrink: 0; }
+  h2 { font-size: 1.3rem; margin: 2rem 0 1rem; color: #f0f6fc; }
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; list-style: none; }
+  .features li { padding: 0.6rem 0.8rem; background: #161b22; border-radius: 6px; font-size: 0.9rem; }
+  .features li::before { content: "▸ "; color: #58a6ff; }
+  .howto { background: #161b22; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .howto p { margin-bottom: 0.5rem; }
+  code { background: #1f2937; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+  hr { border: none; border-top: 1px solid #30363d; margin: 2rem 0; }
+  .footer { color: #8b949e; font-size: 0.85rem; text-align: center; }
+  .footer a { color: #58a6ff; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Mokuyomi</h1>
+<p class="subtitle">Self-hosted web reader for Mokuro-processed manga, with Yomitan dictionary lookup</p>
+
+<div>
+  <span class="badge">Zero dependencies</span>
+  <span class="badge">Python stdlib only</span>
+  <span class="badge">Mobile-ready</span>
+</div>
+
+<div class="downloads">
+  <a class="download-card" href="https://github.com/thelow59/Mokuyomi/releases/latest/download/Mokuyomi-Setup.exe">
+    <span class="icon">⊞</span>
+    <span class="info">
+      <div class="name">Mokuyomi-Setup.exe</div>
+      <div class="desc">Windows — installer wizard with optional autostart</div>
+    </span>
+    <span class="arrow">→</span>
+  </a>
+  <a class="download-card" href="https://github.com/thelow59/Mokuyomi/releases/latest/download/Mokuyomi-Installer.run">
+    <span class="icon">🐧</span>
+    <span class="info">
+      <div class="name">Mokuyomi-Installer.run</div>
+      <div class="desc">Linux — self-extracting installer, works on any distro</div>
+    </span>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<h2>Features</h2>
+<ul class="features">
+  <li>Mokuro OCR overlay — real DOM text, tappable for Yomitan</li>
+  <li>Cross-device sync — progress and immersion time via server</li>
+  <li>Immersion timer — tracks time spent reading per volume</li>
+  <li>Touch navigation — pinch-to-zoom, swipe-to-pan</li>
+  <li>Library management — series cards, per-volume progress</li>
+  <li>Zero dependencies — pure Python stdlib, no pip install</li>
+</ul>
+
+<h2>Quick start</h2>
+<div class="howto">
+  <p><strong>1.</strong> Put your Mokuro-processed manga in the <code>manga/</code> folder.</p>
+  <p><strong>2.</strong> Run Mokuyomi (Start Menu shortcut or double-click the launcher).</p>
+  <p><strong>3.</strong> Open <code>http://localhost:8090</code> in your browser.</p>
+  <p style="margin-top:0.8rem;color:#8b949e">Or run from source: <code>git clone</code> → <code>python3 mokuyomi.py</code></p>
+</div>
+
+<hr>
+
+<div class="footer">
+  <a href="https://github.com/thelow59/Mokuyomi">GitHub</a>
+  &nbsp;·&nbsp; MIT License
+  &nbsp;·&nbsp; <a href="https://github.com/thelow59/Mokuyomi/releases">All releases</a>
+</div>
+
+</div>
+</body>
+</html>
