@@ -14,6 +14,8 @@ Self-hosted web reader for manga processed with [Mokuro](https://github.com/kha-
 
 ## Quick Start
 
+### From source
+
 ```
 git clone https://github.com/thelow59/Mokuyomi.git
 cd Mokuyomi
@@ -22,18 +24,26 @@ mkdir -p manga/<series>/<volume>
 python3 mokuyomi.py         # starts server + opens browser
 ```
 
-The server runs at `http://localhost:8080` by default.
+### From installer (recommended for non-technical users)
 
-## Launcher
+Download the latest installer from the [Releases](https://github.com/thelow59/Mokuyomi/releases) page:
+
+| Platform | File | What to do |
+|---|---|---|
+| **Windows** | `Mokuyomi-Setup.exe` | Double-click → follow the wizard → Start Menu shortcut |
+| **Linux** | `Mokuyomi-Installer.run` | `chmod +x Mokuyomi-Installer.run && ./Mokuyomi-Installer.run` or right-click → Properties → "Allow executing" → double-click |
+
+Both installers can optionally enable **autostart on boot** during installation.
+
+The server runs at `http://localhost:8080` by default. Close the window to stop.
+
+## Launcher (source only)
 
 Double-click **`mokuyomi.py`** (or **`start.bat`** on Windows) to start the server and open your browser automatically. Close the window to stop.
 
-## Auto-start on boot (optional)
+## Auto-start on boot (source only)
 
 Double-click **`install.bat`** (Windows) or **`install.sh`** (Linux) to make Mokuyomi launch automatically when you log in. A terminal window will walk you through it.
-
-- **Windows**: `Mokuyomi.vbs` is placed in the Startup folder — launches silently in the background.
-- **Linux**: `~/.config/autostart/mokuyomi.desktop` is created — opens a terminal with Mokuyomi on login.
 
 ## Structure
 
@@ -63,6 +73,26 @@ Each series directory contains one `.mokuro` file per volume at the series root,
 | `#/` | Library — series grid |
 | `#/series/<dir>` | Volume list for a series |
 | `#/reader/<series>/<volume>` | Reader |
+
+## Building installers
+
+Run the build script on the target platform. All dependencies are auto-installed.
+
+### Windows installer (`Mokuyomi-Setup.exe`)
+
+```
+build_windows.bat
+```
+
+Requires: Python + [NSIS](https://nsis.sourceforge.io/Download) (auto-installs PyInstaller via pip).
+
+### Linux installer (`Mokuyomi-Installer.run`)
+
+```
+./build_linux.sh
+```
+
+Requires: `makeself` (auto-installed via apt/dnf/pacman if missing).
 
 ## Tech
 

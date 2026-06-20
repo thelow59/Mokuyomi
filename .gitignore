@@ -3,3 +3,13 @@ __pycache__/
 *.pyc
 immersion.json
 progress.json
+
+# Build artifacts
+dist_pyinstaller/
+build_pyinstaller/
+build_payload/
+*.spec
+dist/
+Mokuyomi-Installer.run
+*.exe
+*.run

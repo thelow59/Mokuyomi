@@ -4,10 +4,18 @@ import os
 import mimetypes
 import urllib.parse
 import posixpath
+import sys
+
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+    DATA_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATA_DIR = BASE_DIR
 
 MANGA_DIR = "manga"
-IMMERSION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "immersion.json")
-PROGRESS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "progress.json")
+IMMERSION_PATH = os.path.join(DATA_DIR, "immersion.json")
+PROGRESS_PATH = os.path.join(DATA_DIR, "progress.json")
 PORT = int(os.environ.get("PORT", 8080))
 HOST = os.environ.get("HOST", "0.0.0.0")
 
@@ -40,7 +48,7 @@ def save_progress(data):
 
 def scan_manga():
     volumes = []
-    manga_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), MANGA_DIR)
+    manga_path = os.path.join(DATA_DIR, MANGA_DIR)
     if not os.path.isdir(manga_path):
         return volumes
     for series_dir in sorted(os.listdir(manga_path)):
@@ -97,9 +105,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         if path.startswith("/api/mokuro/"):
             rel_path = urllib.parse.unquote(path[len("/api/mokuro/"):])
-            full_path = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), rel_path
-            )
+            full_path = os.path.join(DATA_DIR, rel_path)
             if os.path.isfile(full_path):
                 self.send_json_file(full_path)
             else:
@@ -141,7 +147,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return os.path.isfile(translated)
 
     def serve_file(self, filename):
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+        path = os.path.join(BASE_DIR, filename)
         if not os.path.isfile(path):
             self.send_error(404)
             return
@@ -176,7 +182,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         path = path.split("?", 1)[0]
         path = path.split("#", 1)[0]
         path = urllib.parse.unquote(path)
-        abspath = os.path.abspath(os.path.dirname(__file__))
+        abspath = DATA_DIR
         path = posixpath.normpath(path).lstrip("/")
         for word in path.split("/"):
             if word in (os.curdir, os.pardir, ""):
@@ -185,7 +191,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return abspath
 
 
-if __name__ == "__main__":
+def run():
     server = http.server.ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"Mokuro Reader running on http://{HOST}:{PORT}")
     print(f"Place mokuro-processed manga in ./{MANGA_DIR}/")
@@ -194,3 +200,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nShutting down.")
         server.server_close()
+
+
+if __name__ == "__main__":
+    run()
