@@ -1,0 +1,90 @@
+name: Build release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
+      - name: Install NSIS
+        run: |
+          choco install nsis -y
+
+      - name: Build setup
+        run: build_windows.bat
+
+      - name: Upload setup
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mokuyomi-Setup
+          path: dist/Mokuyomi-Setup.exe
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install makeself
+        run: sudo apt-get update && sudo apt-get install -y makeself
+
+      - name: Build installer
+        run: ./build_linux.sh
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mokuyomi-Installer
+          path: Mokuyomi-Installer.run
+
+  release:
+    needs: [windows, linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Mokuyomi-Setup
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: Mokuyomi-Installer
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Mokuyomi ${{ github.ref_name }}
+          body: |
+            ## Mokuyomi ${{ github.ref_name }}
+
+            ### Downloads
+
+            | File | Platform |
+            |---|---|
+            | `Mokuyomi-Setup.exe` | Windows — double-click to install |
+            | `Mokuyomi-Installer.run` | Linux — `chmod +x` then run |
+
+            ### What's inside
+
+            - Mokuro manga reader with Yomitan OCR text overlay
+            - Cross-device sync (progress + immersion timer)
+            - Mobile-friendly touch interface
+            - Library management with series cards and progress bars
+            - Zero-dependency Python server
+          files: |
+            Mokuyomi-Setup.exe
+            Mokuyomi-Installer.run
