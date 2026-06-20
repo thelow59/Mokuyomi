@@ -24,6 +24,7 @@ jobs:
           choco install nsis -y
 
       - name: Build setup
+        shell: cmd
         run: build_windows.bat
 
       - name: Upload setup

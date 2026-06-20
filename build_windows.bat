@@ -1,6 +1,10 @@
 @echo off
-title Mokuyomi Build Tool
-chcp 65001 >nul
+if not "%CI%"=="" setlocal enabledelayedexpansion
+
+if "%CI%"=="" (
+    title Mokuyomi Build Tool
+    chcp 65001 >nul
+)
 
 echo ============================================
 echo     Mokuyomi - Windows Build Script
@@ -12,7 +16,7 @@ where python >nul 2>nul
 if %errorlevel% neq 0 (
     echo [FAIL] Python not found.
     echo        Download from: https://python.org/downloads
-    pause
+    if "%CI%"=="" pause
     exit /b 1
 )
 
@@ -23,7 +27,7 @@ if %errorlevel% neq 0 (
     pip install pyinstaller
     if %errorlevel% neq 0 (
         echo [FAIL] Failed to install PyInstaller.
-        pause
+        if "%CI%"=="" pause
         exit /b 1
     )
 )
@@ -34,10 +38,15 @@ if not exist "%NSIS_PATH%" (
     set NSIS_PATH=%ProgramFiles%\NSIS\makensis.exe
 )
 if not exist "%NSIS_PATH%" (
-    echo [FAIL] NSIS not found.
-    echo        Download from: https://nsis.sourceforge.io/Download
-    pause
-    exit /b 1
+    where makensis >nul 2>nul
+    if %errorlevel% equ 0 (
+        set NSIS_PATH=makensis
+    ) else (
+        echo [FAIL] NSIS not found.
+        echo        Download from: https://nsis.sourceforge.io/Download
+        if "%CI%"=="" pause
+        exit /b 1
+    )
 )
 
 echo [OK] All tools found.
@@ -49,7 +58,7 @@ pyinstaller --onefile --console --name Mokuyomi --add-data "index.html;." --add-
 
 if %errorlevel% neq 0 (
     echo [FAIL] PyInstaller build failed.
-    pause
+    if "%CI%"=="" pause
     exit /b 1
 )
 
@@ -62,7 +71,7 @@ echo.
 "%NSIS_PATH%" installer.nsi
 if %errorlevel% neq 0 (
     echo [FAIL] NSIS build failed.
-    pause
+    if "%CI%"=="" pause
     exit /b 1
 )
 
@@ -72,4 +81,4 @@ echo  Done!
 echo  Installer: dist\Mokuyomi-Setup.exe
 echo ============================================
 echo.
-pause
+if "%CI%"=="" pause
