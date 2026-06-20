@@ -68,6 +68,7 @@ echo.
 echo [..] Building Mokuyomi-Setup.exe with NSIS...
 echo.
 
+if not exist dist mkdir dist
 "%NSIS_PATH%" installer.nsi
 if %errorlevel% neq 0 (
     echo [FAIL] NSIS build failed.
