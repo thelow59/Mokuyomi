@@ -1,0 +1,5 @@
+manga/
+__pycache__/
+*.pyc
+immersion.json
+progress.json
