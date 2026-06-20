@@ -542,6 +542,9 @@ document.addEventListener('click', e => {
   const block = e.target.closest('.text-block');
   if (block) {
     e.stopPropagation();
+    document.querySelectorAll('.text-block.active').forEach(b => {
+      if (b !== block) b.classList.remove('active');
+    });
     block.classList.toggle('active');
     return;
   }
