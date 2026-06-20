@@ -19,10 +19,29 @@ git clone https://github.com/thelow59/Mokuyomi.git
 cd Mokuyomi
 mkdir -p manga/<series>/<volume>
 # Place your Mokuro .mokuro file and images there
-python3 server.py
+python3 mokuyomi.py         # starts server + opens browser
 ```
 
-Open `http://localhost:8080` in your browser.
+The server runs at `http://localhost:8080` by default.
+
+## Launcher
+
+Double-click `mokuyomi.py` (or `start.bat` on Windows) to start the server and open your browser automatically.
+
+### Auto-start on boot
+
+```
+python3 install.py          # one-time setup
+```
+
+This creates an autostart entry so Mokuyomi launches when you log in.
+
+#### How it works
+
+| Platform | Mechanism |
+|---|---|
+| **Linux** | `~/.config/autostart/mokuyomi.desktop` — starts a terminal running `mokuyomi.py` |
+| **Windows** | `Startup/Mokuyomi.vbs` — launches `mokuyomi.py` in the background |
 
 ## Structure
 
