@@ -17,10 +17,35 @@ else:
     DATA_DIR = BASE_DIR
 
 MANGA_DIR = "manga"
+CONFIG_PATH = os.path.join(DATA_DIR, "config.json")
 IMMERSION_PATH = os.path.join(DATA_DIR, "immersion.json")
 PROGRESS_PATH = os.path.join(DATA_DIR, "progress.json")
 PORT = int(os.environ.get("PORT", 8090))
 HOST = os.environ.get("HOST", "0.0.0.0")
+
+os.makedirs(DATA_DIR, exist_ok=True)
+
+
+def load_config():
+    try:
+        with open(CONFIG_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_config(data):
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False)
+
+
+def get_manga_path():
+    cfg = load_config()
+    saved = cfg.get("manga_path", "")
+    if saved:
+        return saved
+    return os.path.join(DATA_DIR, MANGA_DIR)
 
 
 def load_immersion():
@@ -32,6 +57,7 @@ def load_immersion():
 
 
 def save_immersion(data):
+    os.makedirs(DATA_DIR, exist_ok=True)
     with open(IMMERSION_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False)
 
@@ -45,13 +71,14 @@ def load_progress():
 
 
 def save_progress(data):
+    os.makedirs(DATA_DIR, exist_ok=True)
     with open(PROGRESS_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False)
 
 
 def scan_manga():
     volumes = []
-    manga_path = os.path.join(DATA_DIR, MANGA_DIR)
+    manga_path = get_manga_path()
     if not os.path.isdir(manga_path):
         return volumes
     for series_dir in sorted(os.listdir(manga_path)):
@@ -106,9 +133,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_json(load_progress())
             return
 
+        if path == "/api/config":
+            self.send_json(load_config())
+            return
+
         if path.startswith("/api/mokuro/"):
             rel_path = urllib.parse.unquote(path[len("/api/mokuro/"):])
-            full_path = os.path.join(DATA_DIR, rel_path)
+            full_path = os.path.join(get_manga_path(), rel_path)
             if os.path.isfile(full_path):
                 self.send_json_file(full_path)
             else:
@@ -139,6 +170,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             try:
                 data = json.loads(body)
                 save_progress(data)
+                self.send_json({"ok": True})
+            except (json.JSONDecodeError, ValueError):
+                self.send_error(400, "Invalid JSON")
+            return
+        if path == "/api/config":
+            length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(length)
+            try:
+                data = json.loads(body)
+                save_config(data)
                 self.send_json({"ok": True})
             except (json.JSONDecodeError, ValueError):
                 self.send_error(400, "Invalid JSON")
@@ -190,12 +231,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         for word in path.split("/"):
             if word in (os.curdir, os.pardir, ""):
                 continue
+            if word == MANGA_DIR:
+                abspath = get_manga_path()
+                continue
             abspath = os.path.join(abspath, word)
         return abspath
 
 
 def run():
-    manga_path = os.path.join(DATA_DIR, MANGA_DIR)
+    manga_path = get_manga_path()
     os.makedirs(manga_path, exist_ok=True)
 
     server = http.server.ThreadingHTTPServer((HOST, PORT), Handler)

@@ -22,7 +22,7 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_DIRECTORY
 Page custom AutostartPage AutostartPageLeave
 !insertmacro MUI_PAGE_INSTFILES
-!define MUI_FINISHPAGE_RUN "$INSTDIR\Mokuyomi.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\start.vbs"
 !define MUI_FINISHPAGE_RUN_TEXT "Launch Mokuyomi now"
 !insertmacro MUI_PAGE_FINISH
 
@@ -54,10 +54,12 @@ Section "MainSection" SEC01
   SetOverwrite ifnewer
 
   File "dist_pyinstaller\Mokuyomi.exe"
+  File "start.vbs"
 
-  ; Create Start Menu shortcut
+  ; Create Start Menu shortcuts
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Mokuyomi.lnk" "$INSTDIR\Mokuyomi.exe"
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Mokuyomi (background).lnk" "$INSTDIR\start.vbs"
   CreateShortCut "$DESKTOP\Mokuyomi.lnk" "$INSTDIR\Mokuyomi.exe"
 
   ; Create manga directory
@@ -71,9 +73,9 @@ Section "MainSection" SEC01
   ; Create data directory in APPDATA for frozen EXE
   CreateDirectory "$APPDATA\Mokuyomi"
 
-  ; Autostart via HKCU Run
+  ; Autostart via HKCU Run (use VBS to hide console)
   ${If} $AUTOSTART_CHECKBOX = 1
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Mokuyomi" '"$INSTDIR\Mokuyomi.exe"'
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Mokuyomi" 'wscript.exe "$INSTDIR\start.vbs"'
   ${EndIf}
 
   ; Write uninstaller
@@ -90,6 +92,7 @@ SectionEnd
 Section Uninstall
   ; Remove files
   Delete "$INSTDIR\Mokuyomi.exe"
+  Delete "$INSTDIR\start.vbs"
   Delete "$INSTDIR\uninst.exe"
   RMDir /r "$INSTDIR\manga"
   RMDir "$INSTDIR"

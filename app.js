@@ -5,6 +5,7 @@ let immersionInterval = null;
 let sessionStart = 0;
 let activeSeries = '';
 let activeVolume = '';
+let config = {};
 
 // Zoom & pan
 let zoomLevel = 1;
@@ -187,15 +188,65 @@ function refreshFromServer() {
   });
 }
 
+// ===== Config =====
+async function loadConfig() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) config = await res.json();
+  } catch {}
+}
+
+function showSettings() {
+  const existing = document.getElementById('settingsModal');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'settingsModal';
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">Settings</div>
+      <label class="modal-label">Manga directory path</label>
+      <input class="modal-input" id="mangaPathInput" value="${escHtml(config.manga_path || '')}" placeholder="Leave empty for default (manga/)">
+      <div class="modal-actions">
+        <button class="modal-btn secondary" id="settingsCancel">Cancel</button>
+        <button class="modal-btn primary" id="settingsSave">Save</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  document.getElementById('settingsCancel').addEventListener('click', () => overlay.remove());
+  document.getElementById('settingsSave').addEventListener('click', async () => {
+    const path = document.getElementById('mangaPathInput').value.trim();
+    const newConfig = path ? { manga_path: path } : {};
+    try {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newConfig),
+      });
+      if (res.ok) {
+        config = newConfig;
+        overlay.remove();
+        volumes = await (await fetch('/api/volumes')).json();
+        renderLibrary();
+      }
+    } catch {}
+  });
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
 // ===== Library =====
 async function showLibrary() {
   const app = document.getElementById('app');
-  app.innerHTML = '<div class="library-header">Mokuro Reader</div><div class="library-grid"><div class="spinner"></div></div>';
+  app.innerHTML = '<div class="library-header"><span>Mokuro Reader</span><button class="settings-btn" id="settingsBtn">⚙</button></div><div class="library-grid"><div class="spinner"></div></div>';
 
+  await loadConfig();
   try {
     volumes = await (await fetch('/api/volumes')).json();
     await Promise.all([loadImmersionFromServer(), loadProgressFromServer()]);
     renderLibrary();
+    document.getElementById('settingsBtn').addEventListener('click', showSettings);
   } catch {
     document.querySelector('.library-grid').innerHTML =
       '<div class="library-empty">Failed to load library.</div>';

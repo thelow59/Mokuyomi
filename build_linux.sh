@@ -41,6 +41,7 @@ cp "$SCRIPT_DIR/.gitignore"    "$PAYLOAD/files/"
 cp "$SCRIPT_DIR/install.py"    "$PAYLOAD/files/"
 cp "$SCRIPT_DIR/LICENSE.txt"   "$PAYLOAD/files/"
 cp "$SCRIPT_DIR/icon.svg"      "$PAYLOAD/files/"
+cp "$SCRIPT_DIR/start.sh"      "$PAYLOAD/files/"
 
 # Create setup script
 cat > "$PAYLOAD/setup.sh" << 'SETUPEOF'
@@ -59,6 +60,7 @@ echo "[..] Installing to $INSTALL_DIR"
 mkdir -p "$INSTALL_DIR"
 cp -r "$SCRIPT_DIR/files/"* "$INSTALL_DIR/"
 chmod +x "$INSTALL_DIR/mokuyomi.py"
+chmod +x "$INSTALL_DIR/start.sh"
 
 # Create manga directory
 mkdir -p "$INSTALL_DIR/manga"
@@ -77,9 +79,9 @@ cat > "$APPLICATIONS_DIR/mokuyomi.desktop" << EOF
 Type=Application
 Name=Mokuyomi
 Comment=Mokuro manga reader with Yomitan support
-Exec=$INSTALL_DIR/mokuyomi.py
+Exec=$INSTALL_DIR/start.sh
 Icon=$INSTALL_DIR/icon.svg
-Terminal=true
+Terminal=false
 Categories=Graphics;Viewer;
 StartupNotify=false
 EOF
@@ -103,7 +105,7 @@ esac
 echo ""
 echo "============================================"
 echo "  Done! You can now:"
-echo "  - Run:  $INSTALL_DIR/mokuyomi.py"
+echo "  - Run:  $INSTALL_DIR/start.sh"
 echo "  - Or launch Mokuyomi from your app menu"
 echo "============================================"
 echo ""
