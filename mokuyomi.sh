@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 DIR="$(cd "$(dirname "$0")" && pwd)"
-PID_FILE="/tmp/mokuyomi.pid"
+PORT="${PORT:-8090}"
+
+server_pid() {
+  ss -tlnp 2>/dev/null | grep ":${PORT} " | grep -oP 'pid=\K\d+'
+}
 
 case "${1:-start}" in
   stop)
-    if [ -f "$PID_FILE" ]; then
-      kill "$(cat "$PID_FILE")" 2>/dev/null
-      rm -f "$PID_FILE"
+    pid=$(server_pid)
+    if [ -n "$pid" ]; then
+      kill "$pid" 2>/dev/null
+      sleep 1
       echo "Mokuyomi stopped."
     else
-      pkill -f "python.*server\.py" 2>/dev/null && echo "Mokuyomi stopped." || echo "Not running."
+      echo "Not running."
     fi
     ;;
   restart)
@@ -18,12 +23,11 @@ case "${1:-start}" in
     "$0" start
     ;;
   start|*)
-    if pgrep -f "python.*server\.py" >/dev/null; then
+    if [ -n "$(server_pid)" ]; then
       echo "Already running."
       exit 0
     fi
-    nohup python3 "$DIR/server.py" > /tmp/mokuyomi.log 2>&1 &
-    echo $! > "$PID_FILE"
-    echo "Mokuyomi started (PID $!) — http://localhost:8090"
+    nohup env PORT="$PORT" python3 -u "$DIR/server.py" > /tmp/mokuyomi.log 2>&1 &
+    echo "Mokuyomi started (PID $!) — http://localhost:${PORT}"
     ;;
 esac
