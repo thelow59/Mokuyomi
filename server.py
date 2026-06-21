@@ -139,6 +139,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         if path.startswith("/api/mokuro/"):
             rel_path = urllib.parse.unquote(path[len("/api/mokuro/"):])
+            if rel_path.startswith(MANGA_DIR + "/"):
+                rel_path = rel_path[len(MANGA_DIR) + 1:]
             full_path = os.path.join(get_manga_path(), rel_path)
             if os.path.isfile(full_path):
                 self.send_json_file(full_path)
